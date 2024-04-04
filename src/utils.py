@@ -36,19 +36,3 @@ class DataFormatter:
                 "content": query,
             },
         ]
-
-    def conversations_to_chat(self, tokenizer, sample):
-        # Add system message to conversation
-        conv = sample["conversations"]
-        conv.insert(
-            0,
-            {"from": "system", "value": self.system_prompt},
-        )
-
-        # Apply chat template by tokenizer
-        chat = tokenizer.apply_chat_template(
-            conv, tokenize=False, add_generation_prompt=False
-        )
-        sample["text"] = chat.strip()
-
-        return sample

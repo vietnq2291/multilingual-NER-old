@@ -23,24 +23,27 @@ class NERPipeline:
         self.pipeline_type = pipeline_type
         self.model_type, self.data_format = pipeline_type.split("-")
 
-        if model_type == "mt5":
+        if self.model_type == "mt5":
             self._prepare_mt5_instrucions(model_path, tokenizer_path)
-        elif model_type == "tinyllama":
+        elif self.model_type == "tinyllama":
             self._prepare_tiny_llama_conversations(model_path, tokenizer_path)
 
-        if data_format == "instructions":
+        if self.data_format == "instructions":
             self.data_format_fn = lambda text, entity_type: (
                 self.data_formatter.instruction_template["input"](
                     text, self.data_formatter.query_template(entity_type)
                 )
             )
-        elif data_format == "conversations":
+        elif self.data_format == "conversations":
             self.data_format_fn = lambda text, entity_type: (
-                self.data_formatter.conversation_template(
-                    text, self.data_formatter.query_template(entity_type)
+                self.tokenizer.apply_chat_template(
+                    self.data_formatter.conversation_template(
+                        text, self.data_formatter.query_template(entity_type)
+                    ),
+                    tokenize=False,
+                    add_generation_prompt=False,
                 )
             )
-
         self._setup_usage()
 
     def forward(
