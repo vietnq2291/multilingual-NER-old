@@ -29,13 +29,16 @@ class NERPipeline:
             self._prepare_tiny_llama_conversations(model_path, tokenizer_path)
 
         if self.data_format == "instructions":
-            self.data_format_fn = lambda text, entity_type: (
+            self.format_input_from_raw = lambda text, entity_type: (
                 self.data_formatter.instruction_template["input"](
                     text, self.data_formatter.query_template(entity_type)
                 )
             )
+            self.format_input_from_conv_ds = (
+                self.data_formatter.conversations_to_instructions
+            )
         elif self.data_format == "conversations":
-            self.data_format_fn = lambda text, entity_type: (
+            self.format_input_from_raw = lambda text, entity_type: (
                 self.tokenizer.apply_chat_template(
                     self.data_formatter.conversation_template(
                         text, self.data_formatter.query_template(entity_type)
@@ -44,6 +47,7 @@ class NERPipeline:
                     add_generation_prompt=False,
                 )
             )
+            self.format_input_from_conv_ds = lambda x: x
         self._setup_usage()
 
     def forward(
@@ -55,8 +59,8 @@ class NERPipeline:
         output_style="parsed",
     ):
         if format == "raw":
-            inp = self.data_format_fn(text, entity_type)
-        else:
+            inp = self.format_input_from_raw(text, entity_type)
+        elif format == "conversation_dataset":
             inp = None
 
         input_tokenized = self.tokenizer(inp, add_special_tokens=True)

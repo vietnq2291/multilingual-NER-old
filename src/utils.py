@@ -36,3 +36,16 @@ class DataFormatter:
                 "content": query,
             },
         ]
+
+    def conversations_to_instructions(self, sample):
+        text = sample["conversations"][0]["value"]
+        query = sample["conversations"][2]["value"]
+        target = sample["conversations"][-1]["value"]
+
+        instruction_example = {
+            "id": sample["id"],
+            "input": self.instruction_template["input"](text, query),
+            "label": self.instruction_template["label"](target),
+        }
+
+        return instruction_example
