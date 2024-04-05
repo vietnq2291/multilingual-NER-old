@@ -44,7 +44,7 @@ class NEREvaluator:
 
     def _load_dataset(self, eval_data_path):
         # Prepare data
-        dataset = load_dataset(path="json", data_files=eval_data_path, split="test")
+        dataset = load_dataset(path="json", data_files=eval_data_path, split="train")
         if self.ner_pipe.data_format == "instructions":
             dataset = dataset.map(
                 self.ner_pipe.data_formatter.conversations_to_instructions
