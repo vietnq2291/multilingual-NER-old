@@ -18,24 +18,26 @@ class DataFormatter:
                 "\n", "[NEWLINE]"
             ),
         }
-        self.conversation_template = lambda text, query: [
-            {
-                "role": "system",
-                "content": self.system_prompt,
-            },
-            {
-                "role": "user",
-                "content": f"Text: {text}",
-            },
-            {
-                "role": "assistant",
-                "content": "I've read this text.",
-            },
-            {
-                "role": "user",
-                "content": query,
-            },
-        ]
+        self.conversation_template = {
+            "input": lambda text, query: [
+                {
+                    "role": "system",
+                    "content": self.system_prompt,
+                },
+                {
+                    "role": "user",
+                    "content": f"Text: {text}",
+                },
+                {
+                    "role": "assistant",
+                    "content": "I've read this text.",
+                },
+                {
+                    "role": "user",
+                    "content": query,
+                },
+            ]
+        }
 
     def conversations_to_instructions(self, sample):
         text = sample["conversations"][0]["value"]

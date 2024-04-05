@@ -28,6 +28,7 @@ class NERPipeline:
         elif self.model_type == "tinyllama":
             self._prepare_tiny_llama_conversations(model_path, tokenizer_path)
 
+        # Functions to format inputs
         if self.data_format == "instructions":
             self.format_input_from_raw = lambda text, entity_type: (
                 self.data_formatter.instruction_template["input"](
@@ -40,7 +41,7 @@ class NERPipeline:
         elif self.data_format == "conversations":
             self.format_input_from_raw = lambda text, entity_type: (
                 self.tokenizer.apply_chat_template(
-                    self.data_formatter.conversation_template(
+                    self.data_formatter.conversation_template["input"](
                         text, self.data_formatter.query_template(entity_type)
                     ),
                     tokenize=False,
@@ -52,6 +53,7 @@ class NERPipeline:
 
     def forward(
         self,
+        sample=None,
         text=None,
         entity_type=None,
         format="raw",
@@ -61,7 +63,7 @@ class NERPipeline:
         if format == "raw":
             inp = self.format_input_from_raw(text, entity_type)
         elif format == "conversation_dataset":
-            inp = None
+            inp = sample
 
         input_tokenized = self.tokenizer(inp, add_special_tokens=True)
         input_ids = (
