@@ -1,5 +1,7 @@
 class DataFormatter:
-    def __init__(self):
+    def __init__(self, tokenizer):
+        self.tokenizer = tokenizer
+
         self.system_prompt = "A virtual assistant answers questions from a user based on the provided text."
         self.query_template = (
             lambda entity_type: f"What describes {entity_type} in the text?"
@@ -38,6 +40,18 @@ class DataFormatter:
                 },
             ]
         }
+
+    def gen_instruction_data(self, **kwargs):
+        if "conversations" in kwargs.keys():
+            pass
+        else:
+            text = kwargs["text"]
+            entity_type = kwargs["entity_type"]
+            sample = self.instruction_template["input"](
+                text, self.query_template(entity_type)
+            )
+
+        return sample
 
     def conversations_to_instructions(self, sample):
         text = sample["conversations"][0]["value"]
