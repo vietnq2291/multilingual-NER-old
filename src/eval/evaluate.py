@@ -40,8 +40,15 @@ class NEREvaluator:
     def _load_dataset(self, data_path):
         dataset = load_dataset(path="json", data_files=data_path, split="train")
         if self.data_style == "instructions":
+            print("> Converting conversations dataset into instructions dataset...")
             dataset = dataset.map(
                 self.data_formatter.conversations_to_instructions,
+                remove_columns=dataset.column_names,
+            )
+        elif self.data_style == "sharegpt":
+            print("> Converting conversations dataset into sharegpt dataset...")
+            dataset = dataset.map(
+                self.data_formatter.conversations_to_sharegpt,
                 remove_columns=dataset.column_names,
             )
 

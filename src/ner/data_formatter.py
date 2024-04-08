@@ -41,6 +41,21 @@ class DataFormatter:
             ]
         }
 
+    def format_output(self, output, data_style):
+        if data_style == "instructions":
+            output = output.replace("### Response:", "")
+            output = output.replace("[NEWLINE]", "\n")
+            output = output.strip()
+        elif data_style == "conversations":
+            pass
+        elif data_style == "sharegpt":
+            pass
+        else:
+            raise ValueError("Invalid data style!")
+
+        output = eval(output)
+        return output
+
     def gen_instruction_data(self, **kwargs):
         if "conversations" in kwargs.keys():
             pass
@@ -52,6 +67,9 @@ class DataFormatter:
             )
 
         return sample
+
+    def gen_conversation_data(self, **kwargs):
+        pass
 
     def conversations_to_instructions(self, sample):
         text = sample["conversations"][0]["value"]
@@ -65,3 +83,30 @@ class DataFormatter:
         }
 
         return instruction_example
+
+    def conversations_to_sharegpt(self, sample):
+        sharegpt_conversations = []
+
+        for turn in sample["conversations"]:
+            if turn["from"] == "human":
+                sharegpt_conversations.append(
+                    {"role": "user", "content": turn["value"]}
+                )
+            elif turn["from"] == "gpt":
+                sharegpt_conversations.append(
+                    {"role": "assistant", "content": turn["value"]}
+                )
+            else:
+                sharegpt_conversations.append(
+                    {"role": turn["from"], "content": turn["value"]}
+                )
+
+        sharegpt_sample = {
+            "id": sample["id"],
+            "input": self.tokenizer.apply_chat_template(
+                sharegpt_conversations[:-1], tokenize=False, add_generation_prompt=False
+            ),
+            "label": sharegpt_conversations[-1]["content"],
+        }
+
+        return sharegpt_sample
