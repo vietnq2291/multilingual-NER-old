@@ -13,12 +13,24 @@ class NEREvaluator:
         self.pipeline = pipeline
         self.data_style = data_style
         self._load_dataset(evaluate_data_path)
+        self.labels = None
 
     def run(self, max_length):
+        # Generate labels
+        if self.labels is None:
+            labels = []
+            for sample in self.dataset:
+                labels.append(
+                    self.data_formatter.format_output(sample["label"], self.data_style)
+                )
+            self.labels = labels
+
+        # Generate model preds
         preds = []
         for sample in tqdm(self.dataset):
             pred = self.pipeline.predict(sample["input"], max_length, self.data_style)
             preds.append(pred)
+
         self.evaluate_results = self.evaluate(preds, self.dataset["label"])
         return self.evaluate_results
 
@@ -52,11 +64,4 @@ class NEREvaluator:
                 remove_columns=dataset.column_names,
             )
 
-        dataset = dataset.map(
-            lambda sample: {
-                "label": self.data_formatter.format_output(
-                    sample["label"], self.data_style
-                )
-            }
-        )
         self.dataset = dataset
