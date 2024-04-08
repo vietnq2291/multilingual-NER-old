@@ -53,7 +53,10 @@ class DataFormatter:
         else:
             raise ValueError("Invalid data style!")
 
-        output = eval(output)
+        try:
+            output = eval(output)
+        except:
+            output = []
         return output
 
     def gen_instruction_data(self, **kwargs):
