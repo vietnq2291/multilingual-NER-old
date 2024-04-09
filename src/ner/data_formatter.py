@@ -61,9 +61,21 @@ class DataFormatter:
 
     def gen_data_with_format(self, data_style, **kwargs):
         convert_fn = f"gen_{data_style}_data"
-        return self.getattr(globals()["DataFormatter"](), convert_fn)(**kwargs)
+        return getattr(self, convert_fn)(**kwargs)
 
     def gen_instructions_data(self, **kwargs):
+        if "conversations" in kwargs.keys():
+            pass
+        else:
+            text = kwargs["text"]
+            entity_type = kwargs["entity_type"]
+            sample = self.conversation_template["input"](
+                text, self.query_template(entity_type)
+            )
+
+        return sample
+
+    def gen_conversations_data(self, **kwargs):
         if "conversations" in kwargs.keys():
             pass
         else:
@@ -74,9 +86,6 @@ class DataFormatter:
             )
 
         return sample
-
-    def gen_conversations_data(self, **kwargs):
-        pass
 
     def conversations_to_instructions(self, sample):
         text = sample["conversations"][0]["value"]
