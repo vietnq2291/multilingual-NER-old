@@ -47,8 +47,8 @@ class DataFormatter:
             output = output.replace("[NEWLINE]", "\n")
             output = output.strip()
         elif data_style in ["conversations", "sharegpt"]:
-            if 'LlamaForCausalLM' in model_config.architectures:
-                output = output.split('[/INST]')[-1]
+            if "LlamaForCausalLM" in model_config.architectures:
+                output = output.split("[/INST]")[-1]
             pass
         else:
             raise ValueError("Invalid data style!")
@@ -59,7 +59,11 @@ class DataFormatter:
             output = []
         return output
 
-    def gen_instruction_data(self, **kwargs):
+    def gen_data_with_format(self, data_style, **kwargs):
+        convert_fn = f"gen_{data_style}_data"
+        return self.getattr(globals()["DataFormatter"](), convert_fn)(**kwargs)
+
+    def gen_instructions_data(self, **kwargs):
         if "conversations" in kwargs.keys():
             pass
         else:
@@ -71,7 +75,7 @@ class DataFormatter:
 
         return sample
 
-    def gen_conversation_data(self, **kwargs):
+    def gen_conversations_data(self, **kwargs):
         pass
 
     def conversations_to_instructions(self, sample):
