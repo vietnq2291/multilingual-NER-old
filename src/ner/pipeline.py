@@ -1,12 +1,20 @@
+from transformers import (
+    AutoTokenizer,
+    MT5Tokenizer,
+    AutoModelForCausalLM,
+    MT5ForConditionalGeneration,
+)
 import torch
+
+from ner.data_formatter import DataFormatter
+from ner.utils import get_pipe_config
 
 
 class NERPipeline:
-    def __init__(self, data_formatter, tokenizer, model, usage="inference"):
-        self.data_formatter = data_formatter
-        self.tokenizer = tokenizer
-        self.model = model
+    def __init__(self, pipe_config_id, usage="inference"):
+        self.pipe_config_id = pipe_config_id
         self.usage = usage
+        self._load_pipe_from_config()
         self._setup_usage()
 
     def predict(self, inp, max_length, data_style=None):
@@ -26,6 +34,14 @@ class NERPipeline:
         if data_style:
             output = self.data_formatter.format_output(output, data_style)
         return output
+
+    def _load_pipe_from_config(self):
+        pipe_config = get_pipe_config(self.pipe_config_id)
+        self.model = pipe_config["model_class"].from_pretrained(pipe_config["model_id"])
+        self.tokenizer = pipe_config["tokenizer_class"].from_pretrained(
+            pipe_config["model_id"]
+        )
+        self.data_formatter = DataFormatter(self.tokenizer)
 
     def _setup_usage(self):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

@@ -1,25 +1,21 @@
-from src.base.pipe import NERPipeline
+from ner.pipeline import NERPipeline
 import argparse
 
 
 def main():
     # parse arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model_id", default=None)
-    parser.add_argument("--tokenizer_id", default=None)
-    parser.add_argument("--pipeline_type", default=None)
+    parser.add_argument("--pipe_config_id", default=None)
     parser.add_argument("--max_length", default="512")
     parser.add_argument("--output_style", default="parsed")
 
     args = parser.parse_args()
-    model_id = args.model_id
-    tokenizer_id = args.tokenizer_id
-    pipeline_type = args.pipeline_type
+    pipe_config_id = args.pipe_config_id
     max_length = int(args.max_length)
     output_style = args.output_style
 
-    ner_pipe = NERPipeline(usage="inference")
-    ner_pipe.load_pretrained(pipeline_type, model_id, tokenizer_id)
+    # deine pipeline
+    ner_pipe = NERPipeline(pipe_config_id=pipe_config_id, usage="inference")
 
     # Inference loop
     while True:
@@ -29,13 +25,12 @@ def main():
         entity_type = input("Entity type: ")
         if entity_type == "":
             break
-        out = ner_pipe.forward(
-            text=text,
-            entity_type=entity_type,
-            max_length=max_length,
-            output_style=output_style,
+
+        prompt = ner_pipe.data_formatter.gen_instruction_data(
+            text=text, entity_type=entity_type
         )
-        print("Output:", out)
+        pred = ner_pipe.predict(prompt, max_length, output_style)
+        print("Output:", pred)
         print("----------------------------------")
 
 
