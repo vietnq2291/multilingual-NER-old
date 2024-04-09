@@ -5,6 +5,7 @@ from transformers import (
     MT5ForConditionalGeneration,
 )
 import torch
+import sys
 
 from ner.data_formatter import DataFormatter
 from ner.utils import get_pipe_config
@@ -32,11 +33,13 @@ class NERPipeline:
         output = self.tokenizer.decode(output_ids, skip_special_tokens=True)
 
         if data_style:
-            output = self.data_formatter.format_output(output, data_style, self.model.config)
+            output = self.data_formatter.format_output(
+                output, data_style, self.model.config
+            )
         return output
 
     def _load_pipe_from_config(self):
-        pipe_config = get_pipe_config(self.pipe_config_id)
+        pipe_config = get_pipe_config(self.pipe_config_id, sys.modules[__name__])
         self.model = pipe_config["model_class"].from_pretrained(pipe_config["model_id"])
         self.tokenizer = pipe_config["tokenizer_class"].from_pretrained(
             pipe_config["model_id"]
