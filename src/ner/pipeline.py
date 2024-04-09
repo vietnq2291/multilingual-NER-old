@@ -32,7 +32,7 @@ class NERPipeline:
         output = self.tokenizer.decode(output_ids, skip_special_tokens=True)
 
         if data_style:
-            output = self.data_formatter.format_output(output, data_style)
+            output = self.data_formatter.format_output(output, data_style, self.model.config)
         return output
 
     def _load_pipe_from_config(self):

@@ -21,7 +21,7 @@ class NEREvaluator:
             labels = []
             for sample in self.dataset:
                 labels.append(
-                    self.data_formatter.format_output(sample["label"], self.data_style)
+                    self.data_formatter.format_output(sample["label"], self.data_style, self.pipeline.model.config)
                 )
             self.labels = labels
 
@@ -30,8 +30,9 @@ class NEREvaluator:
         for sample in tqdm(self.dataset):
             pred = self.pipeline.predict(sample["input"], max_length, self.data_style)
             preds.append(pred)
+        self.preds = preds
 
-        self.evaluate_results = self.evaluate(preds, self.dataset["label"])
+        self.evaluate_results = self.evaluate(self.preds, self.labels)
         return self.evaluate_results
 
     def evaluate(self, preds, labels):

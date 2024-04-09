@@ -41,19 +41,22 @@ class DataFormatter:
             ]
         }
 
-    def format_output(self, output, data_style):
+    def format_output(self, output, data_style, model_config):
         if data_style == "instructions":
             output = output.replace("### Response:", "")
             output = output.replace("[NEWLINE]", "\n")
             output = output.strip()
-        elif data_style == "conversations":
-            pass
-        elif data_style == "sharegpt":
+        elif data_style in ["conversations", "sharegpt"]:
+            if 'LlamaForCausalLM' in model_config.architectures:
+                output = output.split('[/INST]')[-1]
             pass
         else:
             raise ValueError("Invalid data style!")
 
-        output = eval(output)
+        try:
+            output = eval(output)
+        except:
+            output = []
         return output
 
     def gen_instruction_data(self, **kwargs):
