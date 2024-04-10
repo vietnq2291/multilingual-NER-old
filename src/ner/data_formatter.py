@@ -47,7 +47,7 @@ class DataFormatter:
             output = output.replace("### Response:", "")
             output = output.replace("[NEWLINE]", "\n")
             output = output.strip()
-        elif self.data_style in ["conversations", "sharegpt"]:
+        elif self.data_style == "conversations":
             if "LlamaForCausalLM" in model_config.architectures:
                 output = output.split("[/INST]")[-1]
             pass
@@ -89,6 +89,10 @@ class DataFormatter:
                 conv, tokenize=False, add_generation_prompt=True
             )
         return sample
+
+    def convert_dataset_with_format(self, sample):
+        convert_fn = f"conversations_to_{self.data_style}"
+        return getattr(self, convert_fn)(sample)
 
     def conversations_to_instructions(self, sample):
         text = sample["conversations"][0]["value"]

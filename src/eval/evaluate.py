@@ -8,10 +8,9 @@ from tqdm import tqdm
 
 
 class NEREvaluator:
-    def __init__(self, data_formatter, pipeline, evaluate_data_path, data_style):
-        self.data_formatter = data_formatter
+    def __init__(self, pipeline, evaluate_data_path):
         self.pipeline = pipeline
-        self.data_style = data_style
+        self.data_formatter = self.pipeline.data_formatter
         self._load_dataset(evaluate_data_path)
         self.labels = None
 
@@ -21,14 +20,16 @@ class NEREvaluator:
             labels = []
             for sample in self.dataset:
                 labels.append(
-                    self.data_formatter.format_output(sample["label"], self.data_style, self.pipeline.model.config)
+                    self.data_formatter.format_output(
+                        sample["label"], self.pipeline.model.config
+                    )
                 )
             self.labels = labels
 
         # Generate model preds
         preds = []
         for sample in tqdm(self.dataset):
-            pred = self.pipeline.predict(sample["input"], max_length, self.data_style)
+            pred = self.pipeline.predict(sample["input"], max_length)
             preds.append(pred)
         self.preds = preds
 
@@ -52,17 +53,12 @@ class NEREvaluator:
 
     def _load_dataset(self, data_path):
         dataset = load_dataset(path="json", data_files=data_path, split="train")
-        if self.data_style == "instructions":
-            print("> Converting conversations dataset into instructions dataset...")
-            dataset = dataset.map(
-                self.data_formatter.conversations_to_instructions,
-                remove_columns=dataset.column_names,
-            )
-        elif self.data_style == "sharegpt":
-            print("> Converting conversations dataset into sharegpt dataset...")
-            dataset = dataset.map(
-                self.data_formatter.conversations_to_sharegpt,
-                remove_columns=dataset.column_names,
-            )
+        print(
+            f"> Converting conversations dataset into {self.data_formatter.data_style} dataset..."
+        )
+        dataset = dataset.map(
+            self.data_formatter.convert_dataset_with_format,
+            remove_columns=dataset.column_names,
+        )
 
         self.dataset = dataset
