@@ -1,6 +1,7 @@
 class DataFormatter:
-    def __init__(self, tokenizer):
+    def __init__(self, tokenizer, data_style):
         self.tokenizer = tokenizer
+        self.data_style = data_style
 
         self.system_prompt = "A virtual assistant answers questions from a user based on the provided text."
         self.query_template = (
@@ -41,12 +42,12 @@ class DataFormatter:
             ]
         }
 
-    def format_output(self, output, data_style, model_config):
-        if data_style == "instructions":
+    def format_output(self, output, model_config):
+        if self.data_style == "instructions":
             output = output.replace("### Response:", "")
             output = output.replace("[NEWLINE]", "\n")
             output = output.strip()
-        elif data_style in ["conversations", "sharegpt"]:
+        elif self.data_style in ["conversations", "sharegpt"]:
             if "LlamaForCausalLM" in model_config.architectures:
                 output = output.split("[/INST]")[-1]
             pass
@@ -59,8 +60,8 @@ class DataFormatter:
             output = []
         return output
 
-    def gen_data_with_format(self, data_style, **kwargs):
-        convert_fn = f"gen_{data_style}_data"
+    def gen_data_with_format(self, **kwargs):
+        convert_fn = f"gen_{self.data_style}_data"
         return getattr(self, convert_fn)(**kwargs)
 
     def gen_instructions_data(self, **kwargs):
