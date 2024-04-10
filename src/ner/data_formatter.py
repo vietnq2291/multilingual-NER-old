@@ -91,10 +91,10 @@ class DataFormatter:
         return sample
 
     def convert_dataset_with_format(self, sample):
-        convert_fn = f"conversations_to_{self.data_style}"
+        convert_fn = f"format_{self.data_style}_dataset"
         return getattr(self, convert_fn)(sample)
 
-    def conversations_to_instructions(self, sample):
+    def format_instructions_dataset(self, sample):
         text = sample["conversations"][0]["value"]
         query = sample["conversations"][2]["value"]
         target = sample["conversations"][-1]["value"]
@@ -107,29 +107,23 @@ class DataFormatter:
 
         return instruction_example
 
-    def conversations_to_sharegpt(self, sample):
-        sharegpt_conversations = []
+    def format_conversations_dataset(self, sample):
+        conversations = []
 
         for turn in sample["conversations"]:
             if turn["from"] == "human":
-                sharegpt_conversations.append(
-                    {"role": "user", "content": turn["value"]}
-                )
+                conversations.append({"role": "user", "content": turn["value"]})
             elif turn["from"] == "gpt":
-                sharegpt_conversations.append(
-                    {"role": "assistant", "content": turn["value"]}
-                )
+                conversations.append({"role": "assistant", "content": turn["value"]})
             else:
-                sharegpt_conversations.append(
-                    {"role": turn["from"], "content": turn["value"]}
-                )
+                conversations.append({"role": turn["from"], "content": turn["value"]})
 
-        sharegpt_sample = {
+        sample = {
             "id": sample["id"],
             "input": self.tokenizer.apply_chat_template(
-                sharegpt_conversations[:-1], tokenize=False, add_generation_prompt=False
+                conversations[:-1], tokenize=False, add_generation_prompt=False
             ),
-            "label": sharegpt_conversations[-1]["content"],
+            "label": conversations[-1]["content"],
         }
 
-        return sharegpt_sample
+        return sample
