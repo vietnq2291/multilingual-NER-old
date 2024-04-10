@@ -3,13 +3,13 @@
     "model_id": "Universal-NER/UniNER-7B-type",
     "model_class": "AutoModelForCausalLM",
     "tokenizer_class": "AutoTokenizer",
-    "data_style": "sharegpt"
+    "data_style": "conversations"
   },
-  "tiny-llama-sharegpt": {
+  "tiny-llama-conversations": {
     "model_id": "LR-AI-Labs/tiny-universal-NER",
     "model_class": "AutoModelForCausalLM",
     "tokenizer_class": "AutoTokenizer",
-    "data_style": "sharegpt"
+    "data_style": "conversations"
   },
   "mt5-instructions": {
     "model_id": "nqv2291/sft-mT5_base-NER",

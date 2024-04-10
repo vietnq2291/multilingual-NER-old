@@ -70,7 +70,7 @@ class DataFormatter:
         else:
             text = kwargs["text"]
             entity_type = kwargs["entity_type"]
-            sample = self.conversation_template["input"](
+            sample = self.instruction_template["input"](
                 text, self.query_template(entity_type)
             )
 
@@ -82,10 +82,12 @@ class DataFormatter:
         else:
             text = kwargs["text"]
             entity_type = kwargs["entity_type"]
-            sample = self.instruction_template["input"](
+            conv = self.conversation_template["input"](
                 text, self.query_template(entity_type)
             )
-
+            sample = self.tokenizer.apply_chat_template(
+                conv, tokenize=False, add_generation_prompt=True
+            )
         return sample
 
     def conversations_to_instructions(self, sample):
