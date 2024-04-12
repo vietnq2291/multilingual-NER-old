@@ -1,6 +1,7 @@
 {
   "universal-ner-7b-type": {
     "model_id": "Universal-NER/UniNER-7B-type",
+    "base_model_id": "meta-llama/Llama-2-7b-hf", 
     "model_class": "AutoModelForCausalLM",
     "tokenizer_class": "AutoTokenizer",
     "data_style": "conversations",
@@ -8,6 +9,7 @@
   },
   "tiny-llama-conversations": {
     "model_id": "LR-AI-Labs/tiny-universal-NER",
+    "base_model_id": "",
     "model_class": "AutoModelForCausalLM",
     "tokenizer_class": "AutoTokenizer",
     "data_style": "conversations",
@@ -15,6 +17,7 @@
   },
   "mt5-base-instructions": {
     "model_id": "nqv2291/sft-mT5_base-NER",
+    "base_model_id": "google/mt5-base",
     "model_class": "MT5ForConditionalGeneration",
     "tokenizer_class": "MT5Tokenizer",
     "tokenizer_configs": {
@@ -26,6 +29,7 @@
   },
   "mt5-large-instructions": {
     "model_id": "nqv2291/sft-mT5_large-NER",
+    "base_model_id": "google/mt5-large",
     "model_class": "MT5ForConditionalGeneration",
     "tokenizer_class": "MT5Tokenizer",
     "tokenizer_configs": {
