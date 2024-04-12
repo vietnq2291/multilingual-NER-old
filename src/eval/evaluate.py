@@ -14,7 +14,7 @@ class NEREvaluator:
         self._load_dataset(evaluate_data_path)
         self.labels = None
 
-    def run(self, max_length):
+    def run(self):
         # Generate labels
         if self.labels is None:
             labels = []
@@ -29,7 +29,7 @@ class NEREvaluator:
         # Generate model preds
         preds = []
         for sample in tqdm(self.dataset):
-            pred = self.pipeline.predict(sample["input"], max_length)
+            pred = self.pipeline.predict(sample["input"])
             preds.append(pred)
         self.preds = preds
 

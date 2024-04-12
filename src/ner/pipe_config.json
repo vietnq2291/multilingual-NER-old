@@ -1,15 +1,17 @@
 {
-  "universal-ner-7b-all": {
+  "universal-ner-7b-type": {
     "model_id": "Universal-NER/UniNER-7B-type",
     "model_class": "AutoModelForCausalLM",
     "tokenizer_class": "AutoTokenizer",
-    "data_style": "conversations"
+    "data_style": "conversations",
+    "context_length": 2048,
   },
   "tiny-llama-conversations": {
     "model_id": "LR-AI-Labs/tiny-universal-NER",
     "model_class": "AutoModelForCausalLM",
     "tokenizer_class": "AutoTokenizer",
-    "data_style": "conversations"
+    "data_style": "conversations",
+    "context_length": 2048,
   },
   "mt5-instructions": {
     "model_id": "nqv2291/sft-mT5_base-NER",
@@ -19,6 +21,7 @@
       "bos_token": "<pad>",
       "sep_token": "</s>"
     },
-    "data_style": "instructions"
+    "data_style": "instructions",
+    "context_length": 1024,
   }
 }

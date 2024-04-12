@@ -6,11 +6,9 @@ def main():
     # parse arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("--pipe_config_id", default=None)
-    parser.add_argument("--max_length", default="512")
 
     args = parser.parse_args()
     pipe_config_id = args.pipe_config_id
-    max_length = int(args.max_length)
 
     # deine pipeline
     ner_pipe = NERPipeline(pipe_config_id=pipe_config_id, usage="inference")
@@ -27,7 +25,7 @@ def main():
         prompt = ner_pipe.data_formatter.gen_data_with_format(
             text=text, entity_type=entity_type
         )
-        pred = ner_pipe.predict(prompt, max_length)
+        pred = ner_pipe.predict(prompt)
         print("Output:", pred)
         print("----------------------------------")
 
