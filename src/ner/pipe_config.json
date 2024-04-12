@@ -5,7 +5,7 @@
     "model_class": "AutoModelForCausalLM",
     "tokenizer_class": "AutoTokenizer",
     "data_style": "conversations",
-    "context_length": 2048,
+    "context_length": 2048
   },
   "tiny-llama-conversations": {
     "model_id": "LR-AI-Labs/tiny-universal-NER",
@@ -13,7 +13,7 @@
     "model_class": "AutoModelForCausalLM",
     "tokenizer_class": "AutoTokenizer",
     "data_style": "conversations",
-    "context_length": 2048,
+    "context_length": 2048
   },
   "mt5-base-instructions": {
     "model_id": "nqv2291/sft-mT5_base-NER",
@@ -25,7 +25,7 @@
       "sep_token": "</s>"
     },
     "data_style": "instructions",
-    "context_length": 1024,
+    "context_length": 1024
   },
   "mt5-large-instructions": {
     "model_id": "nqv2291/sft-mT5_large-NER",
@@ -37,6 +37,6 @@
       "sep_token": "</s>"
     },
     "data_style": "instructions",
-    "context_length": 1024,
+    "context_length": 1024
   }
 }

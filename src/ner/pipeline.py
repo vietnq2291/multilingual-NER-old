@@ -41,15 +41,12 @@ class NERPipeline:
     def _load_pipe_from_config(self):
         pipe_config = get_pipe_config(self.pipe_config_id, sys.modules[__name__])
         if self.usage == "train":
-            self.model = pipe_config["model_class"].from_pretrained(
-                pipe_config["base_model_id"]
-            )
+            model_id = pipe_config["base_model_id"]
         else:
-            self.model = pipe_config["model_class"].from_pretrained(
-                pipe_config["model_id"]
-            )
+            model_id = pipe_config["model_id"]
+        self.model = pipe_config["model_class"].from_pretrained(model_id)
         self.tokenizer = pipe_config["tokenizer_class"].from_pretrained(
-            pipe_config["model_id"], **pipe_config["tokenizer_configs"]
+            model_id, **pipe_config["tokenizer_configs"]
         )
         self.data_formatter = DataFormatter(self.tokenizer, pipe_config["data_style"])
         self.max_length = pipe_config["context_length"]
