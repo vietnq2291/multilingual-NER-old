@@ -12,10 +12,10 @@ from ner.utils import get_pipe_config
 
 
 class NERPipeline:
-    def __init__(self, pipe_config_id, usage="inference"):
+    def __init__(self, pipe_config_id, base_model_id=None, usage="inference"):
         self.pipe_config_id = pipe_config_id
         self.usage = usage
-        self._load_pipe_from_config()
+        self._load_pipe_from_config(base_model_id)
         self._setup_usage()
 
     def predict(self, inp, format_output=True):
@@ -38,10 +38,12 @@ class NERPipeline:
             output = self.data_formatter.format_output(output, self.model.config)
         return output
 
-    def _load_pipe_from_config(self):
+    def _load_pipe_from_config(self, base_model_id):
         pipe_config = get_pipe_config(self.pipe_config_id, sys.modules[__name__])
         if self.usage == "train":
             model_id = pipe_config["base_model_id"]
+        elif self.usage == "continue_train":
+            model_id = base_model_id
         else:
             model_id = pipe_config["model_id"]
         self.model = pipe_config["model_class"].from_pretrained(model_id)
@@ -57,5 +59,5 @@ class NERPipeline:
 
         if self.usage == "inference" or self.usage == "evaluate":
             self.model.eval()
-        elif self.usage == "train":
+        elif self.usage == "train" or self.usage == "continue_train":
             self.model.train()
