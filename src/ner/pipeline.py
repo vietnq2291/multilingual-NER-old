@@ -46,9 +46,9 @@ class NERPipeline:
             model_id = base_model_id
         else:
             model_id = pipe_config["model_id"]
-        self.model = pipe_config["model_class"].from_pretrained(model_id)
+        self.model = pipe_config["model_class"].from_pretrained(model_id, trust_remote_code=True)
         self.tokenizer = pipe_config["tokenizer_class"].from_pretrained(
-            model_id, **pipe_config["tokenizer_configs"]
+            model_id, **pipe_config["tokenizer_configs"], trust_remote_code=True
         )
         self.data_formatter = DataFormatter(self.tokenizer, pipe_config["data_style"])
         self.max_length = pipe_config["context_length"]

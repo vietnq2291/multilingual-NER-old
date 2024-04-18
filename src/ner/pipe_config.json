@@ -1,7 +1,7 @@
 {
   "universal-ner-7b-type": {
     "model_id": "Universal-NER/UniNER-7B-type",
-    "base_model_id": "meta-llama/Llama-2-7b-hf", 
+    "base_model_id": "meta-llama/Llama-2-7b-hf",
     "model_class": "AutoModelForCausalLM",
     "tokenizer_class": "AutoTokenizer",
     "data_style": "conversations",
@@ -37,6 +37,15 @@
       "sep_token": "</s>"
     },
     "data_style": "instructions",
+    "context_length": 1024
+  },
+    "sealion-3b-conversations": {
+    "model_id": "aisingapore/sea-lion-3b",
+    "base_model_id": "",
+    "model_class": "AutoModelForCausalLM",
+    "tokenizer_class": "AutoTokenizer",
+    "tokenizer_configs": {},
+    "data_style": "conversations",
     "context_length": 1024
   }
 }
