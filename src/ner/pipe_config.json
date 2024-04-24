@@ -28,7 +28,7 @@
     "context_length": 1024
   },
   "mt5-large-instructions": {
-    "model_id": "nqv2291/sft-mT5_large-NER",
+    "model_id": "nqv2291/sft-mT5_large-Pile-NER",
     "base_model_id": "google/mt5-large",
     "model_class": "MT5ForConditionalGeneration",
     "tokenizer_class": "MT5Tokenizer",
